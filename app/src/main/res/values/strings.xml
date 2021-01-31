@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Oblig</string>
+    <string name="leggtil">LEGG TIL</string>
+    <string name="leggtilbilde">LEGG TIL BILDER</string>
+    <string name="skrivHer">Skriv navn her</string>
+    <string name="velgBilde">VELG BILDE</string>
+    <string name="slett">SLETT</string>
+    <string name="hoyre"><b>&gt;</b></string>
+    <string name="venstre"><b>&lt;</b></string>
+    <string name="viewNavn"><b>NAVN</b></string>
+    <string name="sendSvar">SJEKK SVAR</string>
+    <string name="tilbake">TILBAKE</string>
+    <string name="startQuiz">START QUIZ</string>
+</resources>
