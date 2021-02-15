@@ -2,12 +2,4 @@
 
 ##Espresso testing
 
-
-###Adding item
-
-###Removing item
-
-###Check activity
-
-###Quiz score
-
+https://imgur.com/a/4Mb7asy
