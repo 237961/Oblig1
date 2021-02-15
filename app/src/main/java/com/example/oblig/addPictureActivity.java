@@ -24,11 +24,13 @@ import java.net.URI;
 
 public class addPictureActivity extends AppCompatActivity {
 
-    ImgItem images[] = DataHolder.getInstance().getData();
+    //ImgItem images[] = DataHolder.getInstance().getData();
 
     ImageView imgview;
     Button velgBilde;
     Uri uri;
+    ImgDatabase db;
+    int numItems;
 
     private static final int IMAGE_PICK_CODE = 1000;
     private static final int PERMISSION_CODE = 1001;
@@ -40,6 +42,9 @@ public class addPictureActivity extends AppCompatActivity {
 
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        db = ImgDatabase.getInstance(this);
+        numItems = db.imgdeo().getAllitems().size();
 
         final EditText text1 = (EditText) findViewById(R.id.EditText01);
         final Button leggTil = (Button) findViewById(R.id.btn_leggtil);
@@ -87,6 +92,10 @@ public class addPictureActivity extends AppCompatActivity {
                 } else if(text1.getText().toString().equals("")) {
                     error.setText("Du har ikke lagt til tekst!");
                 } else {
+                    ImgItem item = new ImgItem(0, (text1.getText().toString()), uri.toString());
+                    db.imgdeo().insertImgitem(item);
+                    startActivity(new Intent(getBaseContext(), seeAndDeleteActivity.class));
+                    /*
                     ImgItem item = new ImgItem(uri, (text1.getText().toString()));
                     ImgItem temp[] = new ImgItem[images.length + 1];
                     for (int i = 0; i < images.length; i++) {
@@ -95,6 +104,8 @@ public class addPictureActivity extends AppCompatActivity {
                     temp[images.length] = item;
                     DataHolder.getInstance().setData(temp);
                     startActivity(new Intent(getBaseContext(), seeAndDeleteActivity.class));
+
+                     */
                 }
             }
         });

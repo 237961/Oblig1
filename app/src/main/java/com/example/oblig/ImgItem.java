@@ -1,37 +1,42 @@
 package com.example.oblig;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import android.net.Uri;
 import android.os.Parcel;
 
-//klasse til å håndtere bilde objekt, håndterer både uri fra lastet opp bilder og resource id fra drawable.
+//klasse til å håndtere bilde objekter, håndterer både uri fra lastet opp bilder og resource id fra drawable.
+@Entity(tableName="img_table")
 public class ImgItem {
+
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
     private int imgResId;
     private String navn;
-    private Uri uri;
+    private String uri;
 
-    public ImgItem(int imgResId, String navn) {
+    public ImgItem(int imgResId, String navn, String uri) {
         this.imgResId = imgResId;
-        this.navn = navn;
-        this.uri = null;
-    }
-    public ImgItem(Uri uri, String navn) {
-        this.imgResId = 0;
         this.navn = navn;
         this.uri = uri;
     }
 
-    public Uri getUri() {
+    public String getUri() {
         return uri;
     }
 
-    public void setUri(Uri uri) {
+    public void setUri(String uri) {
         this.uri = uri;
     }
 
-    protected ImgItem(Parcel in) {
-        imgResId = in.readInt();
-        navn = in.readString();
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getImgResId() {

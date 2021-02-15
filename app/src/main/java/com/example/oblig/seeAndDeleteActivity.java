@@ -9,18 +9,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import androidx.appcompat.app.AppCompatActivity;
+import android.net.Uri;
+
+import java.util.List;
 
 public class seeAndDeleteActivity extends AppCompatActivity {
 
-    ImgItem images[] = DataHolder.getInstance().getData();
+    //ImgItem images[] = DataHolder.getInstance().getData();
+
+    List<ImgItem> items;
+    ImgDatabase db;
+    int imgCounter;
+    int numItems;
 
     //setter startbilde til siste bilde i images slik at ved nye bilder vil det siste bilde vises først.
-    int imgCounter = images.length-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.see_and_delete);
+
+        db = ImgDatabase.getInstance(this);
+        items = db.imgdeo().getAllitems();
+        imgCounter = items.size() -1;
+        numItems = db.imgdeo().getAllitems().size();
+
 
         final EditText text1 = (EditText) findViewById(R.id.EditText01);
         final Button venstre = (Button) findViewById(R.id.btn_venstre);
@@ -32,21 +45,27 @@ public class seeAndDeleteActivity extends AppCompatActivity {
         final ImageView showImg = (ImageView) findViewById(R.id.show_img_view);
         final TextView noImges = (TextView) findViewById(R.id.textViewNoImg);
 
-        if(images[images.length-1].getImgResId() == 0) {
-            showImg.setImageURI(images[images.length-1].getUri());
+
+        if(items.size() > 0) {
+            if(items.get(items.size() -1).getImgResId() == 0) {
+                showImg.setImageURI(Uri.parse(items.get(items.size()-1).getUri()));
+            } else {
+                showImg.setImageResource(items.get(items.size()-1).getImgResId());
+            }
+            navn.setText(items.get(items.size()-1).getNavn());
         } else {
-            showImg.setImageResource(images[images.length-1].getImgResId());
+            showImg.setImageResource(R.drawable.ic_baseline_image_24);
+            navn.setText("Ingen Bilder");
         }
-        navn.setText(images[images.length-1].getNavn());
+
 
         //starter quiz om det er flere enn 2 bilder
         startQuiz.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(images.length < 2) {
+                if(items.size() < 2) {
                     noImges.setText("Ikke nok bilder til å starte quiz!");
                 } else {
-                    DataHolder.getInstance().setData(images);
                     startActivity(new Intent(getBaseContext(), quizActivity.class));
                 }
             }
@@ -58,7 +77,7 @@ public class seeAndDeleteActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(getBaseContext(), addPictureActivity.class);
-                DataHolder.getInstance().setData(images);
+                //DataHolder.getInstance().setData(images);
                 startActivity(intent);
             }
         });
@@ -83,11 +102,14 @@ public class seeAndDeleteActivity extends AppCompatActivity {
         slett.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (images.length == 0) {
+                if (items.size() == 0) {
                     return;
                 } else {
-                    images[imgCounter] = null;
-                    for (int i = 0; i < images.length; i++) {
+                    db.imgdeo().deleteImgItem(items.get(imgCounter));
+                    items = db.imgdeo().getAllitems();
+                    endreBilde(showImg, navn, 0);
+                    /*
+                    for (int i = 0; i < items.size(); i++) {
                         if (images[i] == null) {
                             ImgItem temp[] = new ImgItem[images.length - 1];
                             for (int index = 0; index < i; index++) {
@@ -101,6 +123,7 @@ public class seeAndDeleteActivity extends AppCompatActivity {
                             break;
                         }
                     }
+                     */
                 }
             }
         });
@@ -108,33 +131,33 @@ public class seeAndDeleteActivity extends AppCompatActivity {
 
     //Metoden som endrer bilde ved å bla til venstre/høyre
     private void endreBilde(ImageView showImg, TextView navn, int retning) {
-            if(images.length == 0) {
+            if(items.size() == 0) {
                 showImg.setImageResource(R.drawable.ic_baseline_image_24);
                 navn.setText("Ingen Bilder");
             } else if(retning == 0){
                 if(imgCounter <= 0) {
-                    imgCounter = images.length - 1;
+                    imgCounter = items.size()-1;
                 } else {
                     imgCounter--;
                 }
-                if(images[imgCounter].getImgResId() == 0) {
-                    showImg.setImageURI(images[imgCounter].getUri());
+                if(items.get(imgCounter).getImgResId() == 0) {
+                    showImg.setImageURI(Uri.parse(items.get(imgCounter).getUri()));
                 } else {
-                    showImg.setImageResource(images[imgCounter].getImgResId());
+                    showImg.setImageResource(items.get(imgCounter).getImgResId());
                 }
-                navn.setText(images[imgCounter].getNavn());
+                navn.setText(items.get(imgCounter).getNavn());
             } else if(retning == 1) {
-                if(imgCounter >= (images.length -1)) {
+                if(imgCounter >= (items.size() -1)) {
                     imgCounter = 0;
                 } else {
                     imgCounter++;
                 }
-                if(images[imgCounter].getImgResId() == 0) {
-                    showImg.setImageURI(images[imgCounter].getUri());
+                if(items.get(imgCounter).getImgResId() == 0) {
+                    showImg.setImageURI(Uri.parse(items.get(imgCounter).getUri()));
                 } else {
-                    showImg.setImageResource(images[imgCounter].getImgResId());
+                    showImg.setImageResource(items.get(imgCounter).getImgResId());
                 }
-                    navn.setText(images[imgCounter].getNavn());
+                    navn.setText(items.get(imgCounter).getNavn());
             }
     }
 }
